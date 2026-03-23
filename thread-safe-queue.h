@@ -30,18 +30,30 @@ public:
     return std::nullopt; // Return this if there is nothing in queue
   }
 
-  int waitForTask()
+  std::optional<int> waitForTask()
   {
     std::unique_lock<std::mutex> guard(lock); // Allows the release of the lock mid scope
     cv.wait(guard, [this]
-            { return !queue.empty(); }); // Puts a thread to sleep until there is a task
-    int task = queue.front();
-    queue.pop();
-    return task;
+            { return stopped || !queue.empty(); }); // Puts a thread to sleep until there is a task
+    if (!stopped)
+    {
+      int task = queue.front();
+      queue.pop();
+      return task;
+    }
+    return std::nullopt;
+  }
+
+  void stopWaiting()
+  {
+    std::lock_guard<std::mutex> guard(lock);
+    stopped = true;
+    cv.notify_all();
   }
 
 private:
   std::queue<int> queue;
   std::mutex lock;
   std::condition_variable cv;
+  bool stopped = false;
 };
