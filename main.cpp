@@ -1,26 +1,15 @@
-#pragma once
-#include <queue>
+#include <iostream>
+#include "thread-safe-queue.h"
 
-class ThreadSafeQueue
+int main()
 {
-public:
-    void push(int task)
-    {
-        queue.push(task);
-    }
+    ThreadSafeQueue test;
 
-    int pop()
-    {
-        int task;
-        if (!queue.empty())
-        {
-            task = queue.front();
-            queue.pop();
-        }
+    test.push(2);
+    test.push(5);
+    test.push(1);
 
-        return task;
-    }
+    std::cout << test.pop().value();
 
-private:
-    std::queue<int> queue;
-};
+    return 0;
+}
