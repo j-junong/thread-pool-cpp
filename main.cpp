@@ -9,7 +9,14 @@ int main()
     test.push(5);
     test.push(1);
 
-    std::cout << test.pop().value();
+    int result = test.waitForTask();
+    std::cout << result << std::endl;
+
+    result = test.waitForTask();
+    std::cout << result << std::endl;
+
+    result = test.waitForTask();
+    std::cout << result << std::endl;
 
     return 0;
 }
