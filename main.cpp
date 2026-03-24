@@ -4,15 +4,14 @@
 
 int main()
 {
-    ThreadSafeQueue test;
+    ThreadSafeQueue<int> test;
 
     std::thread producer([&test]()
                          {
                              test.push(1);
                              test.push(2);
                              test.push(3);
-                             std::cout << "Producer pushed 3 tasks" << std::endl;
-                         });
+                             std::cout << "Producer pushed 3 tasks" << std::endl; });
 
     std::thread consumer([&test]()
                          {
