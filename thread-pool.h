@@ -3,6 +3,7 @@
 #include <functional>
 #include <vector>
 #include <thread>
+#include <future>
 
 class ThreadPool
 {
@@ -24,9 +25,13 @@ public:
   }
 
   // Adds task into the queue and wakes a thread
-  void addTask(std::function<void()> task)
+  template <typename T>
+  std::future<T> addTask(std::function<T()> task)
   {
-    tasks.push(std::move(task));
+    auto wrapper = std::make_shared<std::packaged_task<T()>>(task);
+    std::future<T> future = wrapper->get_future();
+    tasks.push([wrapper] () { (*wrapper)(); });
+    return future;
   }
 
   ~ThreadPool()
