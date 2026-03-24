@@ -35,17 +35,18 @@ public:
   {
     std::unique_lock<std::mutex> guard(lock); // Allows the release of the lock mid scope
     cv.wait(guard, [this]
-            { return stopped || !queue.empty(); }); // Puts a thread to sleep until there is a task
+       { return stopped || !queue.empty(); }); // Puts a thread to sleep until there is a task
     if (!stopped)                                   // If thread wakes up not from shutting down
     {
       T task = queue.front();
       queue.pop();
       return task;
     }
-    return std::nullopt;
+    return std::nullopt; // Returns this when shutting down
   }
 
-  void stopWaiting()
+  // When we are shutting down
+  void stop()
   {
     std::lock_guard<std::mutex> guard(lock);
     stopped = true;

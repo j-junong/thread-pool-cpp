@@ -1,27 +1,19 @@
 #include <iostream>
 #include <thread>
 #include "thread-safe-queue.h"
+#include "thread-pool.h"
 
 int main()
 {
-    ThreadSafeQueue<int> test;
-
-    std::thread producer([&test]()
-                         {
-                             test.push(1);
-                             test.push(2);
-                             test.push(3);
-                             std::cout << "Producer pushed 3 tasks" << std::endl; });
-
-    std::thread consumer([&test]()
-                         {
-        for (int i{}; i < 3; ++i) {
-            std::optional<int> task = test.waitForTask();
-            if (task.has_value()) std::cout << "Consumer got task: " << task.value() << std::endl;
-        } });
-
-    producer.join();
-    consumer.join();
+    ThreadPool pool(4);
+    pool.addTask([]() { std::cout << "Task 1 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 2 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 3 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 4 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 5 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 6 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 7 executed" << std::endl; });
+    pool.addTask([]() { std::cout << "Task 8 executed" << std::endl; });
 
     return 0;
 }
