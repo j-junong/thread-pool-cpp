@@ -28,9 +28,9 @@ public:
   template <typename T>
   std::future<T> addTask(std::function<T()> task)
   {
-    auto wrapper = std::make_shared<std::packaged_task<T()>>(task);
-    std::future<T> future = wrapper->get_future();
-    tasks.push([wrapper] () { (*wrapper)(); });
+    auto wrapper = std::make_shared<std::packaged_task<T()>>(task); // Create a task on the heap
+    std::future<T> future = wrapper->get_future(); // Connect wrapper to future
+    tasks.push([wrapper] () { (*wrapper)(); }); // Push the task onto the queue
     return future;
   }
 
